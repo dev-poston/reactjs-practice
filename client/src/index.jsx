@@ -1,6 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
+import Submit from './components/submit.jsx';
+import API from './API.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -8,11 +9,35 @@ class App extends React.Component {
     this.state = {
       value: ''
     }
+    this.submit = this.submit.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(e) {
+    this.setState({
+      value: e.target.value
+    });
+  }
+
+  submit(e) {
+    e.preventDefault();
+    API.create({item: this.state.value}, (err, data) => {
+      if (err) {
+        console.log('FE API CREATE ERROR: ', err);
+      } else {
+        console.log(data);
+      }
+    });
   }
 
   render() {
     return (
-      <div>Hello World</div>
+      <div>
+        <Submit
+          submit={this.submit}
+          onChange={this.onChange}
+        />
+      </div>
     )
   }
 };
