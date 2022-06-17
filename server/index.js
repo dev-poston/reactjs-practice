@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/create', (req, res) => {
-  console.log(req.body);
+  console.log(req.body.item);
 })
 
 app.listen(port, () => {
