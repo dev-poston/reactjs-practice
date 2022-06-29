@@ -2,9 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Submit from './components/submit.jsx';
 import Search from './components/search.jsx';
+import Gallery from './components/gallery.jsx';
 import API from './API.js';
 import './styles.css';
-
 
 class App extends React.Component {
   constructor(props) {
@@ -15,12 +15,32 @@ class App extends React.Component {
       diameter: 0,
       width: 0,
       pattern: '',
-      offset: 0
+      offset: 0,
+      page: 1,
+      pageLimit: 5,
+      images: []
     }
+
     this.submit = this.submit.bind(this);
     this.onChange = this.onChange.bind(this);
     this.search = this.search.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.pageLeft = this.pageLeft.bind(this);
+    this.pageRight = this.pageRight.bind(this);
+  }
+
+  componentDidMount() {
+    console.log('Welcome to WheelTrader.com')
+    API.readAll({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
+      if (err) {
+        console.log('CDM ERROR: ', err);
+      } else {
+        console.log('CDM DATA: ', data.data);
+        this.setState({
+          images: data.data
+        });
+      }
+    })
   }
 
   onChange(e) {
@@ -66,6 +86,44 @@ class App extends React.Component {
     });
   }
 
+  pageLeft(e) {
+    e.preventDefault();
+    console.log('CLICK LEFT!')
+    this.setState({
+      page: this.state.page - 1
+    }, () => {
+      API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
+        if (err) {
+          console.log('CLIENTSIDE ERROR: ', err);
+        } else {
+          console.log('CLIENTSIDE DATA', data);
+          this.setState({
+            images: data.data
+          });
+        }
+      })
+    })
+  }
+
+  pageRight(e) {
+    e.preventDefault();
+    console.log('CLICK RIGHT!', e)
+    this.setState({
+      page: this.state.page + 1
+    }, () => {
+      API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
+        if (err) {
+          console.log('CLIENTSIDE ERROR: ', err);
+        } else {
+          console.log('CLIENTSIDE DATA', data);
+          this.setState({
+            images: data.data
+          });
+        }
+      })
+    })
+  }
+
   render() {
     return (
       <div>
@@ -76,6 +134,12 @@ class App extends React.Component {
         />
         <Search
           search={this.search}
+        />
+        <Gallery
+          page={this.state.page}
+          images={this.state.images}
+          pageLeft={this.pageLeft}
+          pageRight={this.pageRight}
         />
       </div>
     )

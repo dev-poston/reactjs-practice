@@ -1,10 +1,11 @@
 const axios = require("axios");
 
 module.exports = {
-  readAll: (callback) => {
-    axios('/')
+  readAll: (items, callback) => {
+    axios.post('/', items)
       .then(data => {
         console.log('AXIOS GET: ', data);
+        callback(null, data.data);
       })
       .catch(err => {
         console.log('AXIOS ERROR: ', err);
@@ -27,6 +28,16 @@ module.exports = {
       })
       .catch(err => {
         console.log('AXIOS CREATE ERROR: ', err);
+      });
+  },
+  changePage: (items, callback) => {
+    axios.post('/changePage', items)
+      .then(data => {
+        console.log('AXIOS PAGE DATA', data);
+        callback(null, data.data)
+      })
+      .catch(err => {
+        console.log('AXIOS PAGE ERROR: ', err);
       });
   }
 }

@@ -21,3 +21,13 @@ h1 {
   margin-top: 10px;
   margin-left: 20px;
 }
+
+#gallery {
+  text-align: center;
+  display: inline-flex;
+  color: white;
+}
+
+#paginate {
+ text-align: center;
+}
