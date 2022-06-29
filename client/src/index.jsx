@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import Submit from './components/submit.jsx';
 import Search from './components/search.jsx';
 import Gallery from './components/gallery.jsx';
+import fakeData from '../../database/fakeData.js';
 import API from './API.js';
 import './styles.css';
 
@@ -89,39 +90,43 @@ class App extends React.Component {
   pageLeft(e) {
     e.preventDefault();
     console.log('CLICK LEFT!')
-    this.setState({
-      page: this.state.page - 1
-    }, () => {
-      API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
-        if (err) {
-          console.log('CLIENTSIDE ERROR: ', err);
-        } else {
-          console.log('CLIENTSIDE DATA', data);
-          this.setState({
-            images: data.data
-          });
-        }
+    if (this.state.page > 1) {
+      this.setState({
+        page: this.state.page - 1
+      }, () => {
+        API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
+          if (err) {
+            console.log('CLIENTSIDE ERROR: ', err);
+          } else {
+            console.log('CLIENTSIDE DATA', data);
+            this.setState({
+              images: data.data
+            });
+          }
+        })
       })
-    })
+    }
   }
 
   pageRight(e) {
     e.preventDefault();
-    console.log('CLICK RIGHT!', e)
-    this.setState({
-      page: this.state.page + 1
-    }, () => {
-      API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
-        if (err) {
-          console.log('CLIENTSIDE ERROR: ', err);
-        } else {
-          console.log('CLIENTSIDE DATA', data);
-          this.setState({
-            images: data.data
-          });
-        }
+    console.log('CLICK RIGHT!')
+    if (this.state.page * this.state.pageLimit < fakeData.length) {
+      this.setState({
+        page: this.state.page + 1
+      }, () => {
+        API.changePage({page: this.state.page, pageLimit: this.state.pageLimit}, (err, data) => {
+          if (err) {
+            console.log('CLIENTSIDE ERROR: ', err);
+          } else {
+            console.log('CLIENTSIDE DATA', data);
+            this.setState({
+              images: data.data
+            });
+          }
+        })
       })
-    })
+    }
   }
 
   render() {
